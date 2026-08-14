@@ -1,0 +1,27 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Deploy: connect this repo in the Render dashboard and it will pick this file up,
+# or run `render blueprint launch`. After the first deploy, fill in the env vars
+# below in the Render dashboard (Environment tab) — they are marked sync: false
+# so Render won't expect them in this file.
+#
+# Starting on the free plan since traffic is unknown; upgrade to "starter" (paid,
+# always-on) if this becomes the live tool during an active crisis — the free plan
+# spins down after inactivity, so the first request after idle time is slow.
+
+services:
+  - type: web
+    name: help-colombia
+    runtime: node
+    plan: free
+    branch: main
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.16.0
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false

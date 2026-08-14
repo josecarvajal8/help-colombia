@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+:root {
+  --color-paper: #faf6ee;
+  --color-paper-dim: #f1eada;
+  --color-ink: #1c2b33;
+  --color-ink-soft: #4a5a63;
+
+  --color-azul: #003893;
+  --color-azul-soft: #e7ecf7;
+
+  --color-amarillo: #f5b700;
+  --color-amarillo-soft: #fff3d1;
+  --color-amarillo-ink: #8a6300;
+  --color-amarillo-label: #a8790b;
+
+  --color-rojo: #c81e3a;
+  --color-rojo-soft: #fbe3e7;
+
+  --color-verde: #2f7a4c;
+  --color-verde-soft: #e4f1e7;
+
+  --color-line: #ded3bc;
+  --color-cerrado-dot: #b9b0a0;
+  --color-cerrado-label: #8a8071;
+
+  --font-display: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+  --font-body: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-data: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+  --radius-card: 14px;
+}
+
+@theme inline {
+  --color-paper: var(--color-paper);
+  --color-paper-dim: var(--color-paper-dim);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+
+  --color-azul: var(--color-azul);
+  --color-azul-soft: var(--color-azul-soft);
+
+  --color-amarillo: var(--color-amarillo);
+  --color-amarillo-soft: var(--color-amarillo-soft);
+  --color-amarillo-ink: var(--color-amarillo-ink);
+  --color-amarillo-label: var(--color-amarillo-label);
+
+  --color-rojo: var(--color-rojo);
+  --color-rojo-soft: var(--color-rojo-soft);
+
+  --color-verde: var(--color-verde);
+  --color-verde-soft: var(--color-verde-soft);
+
+  --color-line: var(--color-line);
+  --color-cerrado-dot: var(--color-cerrado-dot);
+  --color-cerrado-label: var(--color-cerrado-label);
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-data: var(--font-data);
+
+  --radius-card: var(--radius-card);
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+@keyframes status-pulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+.pulse-ring::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  border: 1.5px solid currentColor;
+  animation: status-pulse 1.8s ease-out infinite;
+}
