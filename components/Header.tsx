@@ -18,7 +18,7 @@ export function Header() {
           className="h-[34px] w-[34px] shrink-0 rounded-[9px]"
           style={{
             background:
-              "linear-gradient(135deg, #003893 0%, #003893 55%, #F5B700 55%, #F5B700 78%, #C81E3A 78%)",
+              "linear-gradient(135deg, #F5B700 0%, #F5B700 55%, #003893 55%, #003893 78%, #C81E3A 78%)",
           }}
         />
         <div>

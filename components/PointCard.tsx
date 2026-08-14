@@ -1,4 +1,5 @@
 import type { Point } from "@/lib/types";
+import { formatRelativeEs } from "@/lib/format";
 import { StatusPill } from "./StatusPulse";
 import { NeedTag } from "./NeedTag";
 
@@ -36,7 +37,9 @@ export function PointCard({ point }: { point: Point }) {
 
       <div className="flex items-center justify-between border-t border-dashed border-line pt-2.5 text-[11.5px] text-ink-soft">
         <span className="font-bold text-ink">{point.city}</span>
-        <span className="font-[family-name:var(--font-data)]">{point.updatedLabel}</span>
+        <span className="font-[family-name:var(--font-data)]">
+          {formatRelativeEs(point.updatedAt)}
+        </span>
       </div>
     </div>
   );

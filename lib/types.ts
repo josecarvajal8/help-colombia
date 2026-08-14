@@ -19,5 +19,5 @@ export type Point = {
   mapsUrl: string | null;
   donationInfo: string | null;
   needs: Need[];
-  updatedLabel: string;
+  updatedAt: string;
 };
