@@ -59,6 +59,15 @@ export function PointDetailModal({
 
         <StatusPill status={point.status} />
 
+        {point.schedule && (
+          <div className="flex flex-col gap-1">
+            <span className="text-[11px] font-bold uppercase tracking-wide text-ink-soft">
+              {dict.point.scheduleTitle}
+            </span>
+            <p className="text-[13px]">{point.schedule}</p>
+          </div>
+        )}
+
         {point.mapsUrl && (
           <a
             href={point.mapsUrl}

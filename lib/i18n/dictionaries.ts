@@ -18,6 +18,7 @@ export type Dictionary = {
     moreCount: (n: number) => string;
     viewDetails: string;
     donationTitle: string;
+    scheduleTitle: string;
     openMaps: string;
     close: string;
   };
@@ -58,6 +59,8 @@ export type Dictionary = {
     statusLabel: string;
     addressLabel: string;
     mapsLabel: string;
+    scheduleLabel: string;
+    schedulePlaceholder: string;
     donationLabel: string;
     donationPlaceholder: string;
     needsLabel: string;
@@ -81,6 +84,13 @@ export type Dictionary = {
     inviteError: string;
     deletePoint: string;
     needsToggle: (n: number) => string;
+  };
+  externalOrgs: {
+    heading: string;
+    description: string;
+    donateLabel: string;
+    redCross: { name: string; description: string };
+    abaco: { name: string; description: string };
   };
 };
 
@@ -116,6 +126,7 @@ const es: Dictionary = {
     moreCount: (n) => `+${n} más`,
     viewDetails: "Ver detalles →",
     donationTitle: "Donación en dinero",
+    scheduleTitle: "Horario",
     openMaps: "Abrir en Google Maps →",
     close: "Cerrar",
   },
@@ -160,6 +171,8 @@ const es: Dictionary = {
     statusLabel: "Estado del punto",
     addressLabel: "Dirección",
     mapsLabel: "Enlace de Google Maps",
+    scheduleLabel: "Horario de atención (opcional)",
+    schedulePlaceholder: "Ej: Lunes a viernes, 9am–6pm",
     donationLabel: "Datos para donación en dinero (opcional)",
     donationPlaceholder: "Ej: Nequi 300 123 4567 — A nombre de...",
     needsLabel: "Qué se necesita",
@@ -183,6 +196,21 @@ const es: Dictionary = {
     inviteError: "Error al invitar",
     deletePoint: "Eliminar punto",
     needsToggle: (n) => `Necesidades (${n})`,
+  },
+  externalOrgs: {
+    heading: "Otras formas de ayudar",
+    description:
+      "Si prefieres donar dinero directamente, estas organizaciones ya trabajan en el terreno en Colombia.",
+    donateLabel: "Donar →",
+    redCross: {
+      name: "Cruz Roja Colombiana",
+      description:
+        "Respuesta humanitaria, atención médica y ayuda de emergencia en todo el país.",
+    },
+    abaco: {
+      name: "ABACO",
+      description: "Red de bancos de alimentos que combate el hambre en Colombia.",
+    },
   },
 };
 
@@ -218,6 +246,7 @@ const en: Dictionary = {
     moreCount: (n) => `+${n} more`,
     viewDetails: "View details →",
     donationTitle: "Money donations",
+    scheduleTitle: "Hours",
     openMaps: "Open in Google Maps →",
     close: "Close",
   },
@@ -262,6 +291,8 @@ const en: Dictionary = {
     statusLabel: "Point status",
     addressLabel: "Address",
     mapsLabel: "Google Maps link",
+    scheduleLabel: "Hours of operation (optional)",
+    schedulePlaceholder: "E.g.: Mon–Fri, 9am–6pm",
     donationLabel: "Money donation details (optional)",
     donationPlaceholder: "E.g.: Zelle 555-123-4567 — Under the name...",
     needsLabel: "What's needed",
@@ -285,6 +316,20 @@ const en: Dictionary = {
     inviteError: "Error sending invite",
     deletePoint: "Delete point",
     needsToggle: (n) => `Needs (${n})`,
+  },
+  externalOrgs: {
+    heading: "Other ways to help",
+    description:
+      "If you'd rather donate money directly, these organizations are already working on the ground in Colombia.",
+    donateLabel: "Donate →",
+    redCross: {
+      name: "Colombian Red Cross",
+      description: "Humanitarian response, medical care, and emergency relief nationwide.",
+    },
+    abaco: {
+      name: "ABACO",
+      description: "A network of food banks working to fight hunger in Colombia.",
+    },
   },
 };
 

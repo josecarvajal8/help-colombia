@@ -8,6 +8,7 @@ import { useDictionary } from "@/lib/i18n/LanguageProvider";
 import { CityFilter } from "@/components/CityFilter";
 import { LiveClock } from "@/components/LiveClock";
 import { PointCard } from "@/components/PointCard";
+import { ExternalOrgsSection } from "@/components/ExternalOrgsSection";
 
 export function PublicPointsView({ initialPoints }: { initialPoints: Point[] }) {
   const dict = useDictionary();
@@ -62,6 +63,8 @@ export function PublicPointsView({ initialPoints }: { initialPoints: Point[] }) 
           ))}
         </div>
       )}
+
+      <ExternalOrgsSection />
     </main>
   );
 }

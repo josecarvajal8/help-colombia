@@ -28,6 +28,11 @@ export function PointCard({ point }: { point: Point }) {
           <div>
             <p className="mb-0.5 text-[16.5px] font-semibold">{point.name}</p>
             <p className="line-clamp-1 text-[12.5px] text-ink-soft">{point.address}</p>
+            {point.schedule && (
+              <p className="mt-0.5 font-[family-name:var(--font-data)] text-[11px] text-ink-soft">
+                {point.schedule}
+              </p>
+            )}
           </div>
           <StatusPill status={point.status} />
         </div>

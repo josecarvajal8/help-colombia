@@ -112,13 +112,14 @@ function PointEditor({
   }
 
   async function handleFieldBlur(
-    field: "address" | "mapsUrl" | "donationInfo",
+    field: "address" | "mapsUrl" | "donationInfo" | "schedule",
     value: string,
   ) {
     const patch = { [field]: value || null } as Partial<{
       address: string;
       mapsUrl: string | null;
       donationInfo: string | null;
+      schedule: string | null;
     }>;
     await withSave(() => updatePoint(supabase, point.id, patch));
   }
@@ -192,6 +193,19 @@ function PointEditor({
             type="text"
             defaultValue={point.address}
             onBlur={(e) => handleFieldBlur("address", e.target.value)}
+            className="w-full rounded-lg border border-line px-3 py-2 text-[13.5px]"
+          />
+        </div>
+
+        <div>
+          <label className="mb-1.5 block text-[10.5px] font-bold uppercase tracking-wide text-ink-soft">
+            {dict.coordinator.scheduleLabel}
+          </label>
+          <input
+            type="text"
+            defaultValue={point.schedule ?? ""}
+            placeholder={dict.coordinator.schedulePlaceholder}
+            onBlur={(e) => handleFieldBlur("schedule", e.target.value)}
             className="w-full rounded-lg border border-line px-3 py-2 text-[13.5px]"
           />
         </div>

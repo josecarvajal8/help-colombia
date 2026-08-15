@@ -18,6 +18,7 @@ export type Point = {
   status: PointStatus;
   mapsUrl: string | null;
   donationInfo: string | null;
+  schedule: string | null;
   needs: Need[];
   updatedAt: string;
 };

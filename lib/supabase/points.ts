@@ -2,7 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { City, Need, NeedPriority, Point, PointStatus } from "@/lib/types";
 
 const POINTS_SELECT =
-  "id, name, address, city, status, maps_url, donation_info, updated_at, needs(id, item, priority)";
+  "id, name, address, city, status, maps_url, donation_info, schedule, updated_at, needs(id, item, priority)";
 
 type PointRow = {
   id: string;
@@ -12,6 +12,7 @@ type PointRow = {
   status: Point["status"];
   maps_url: string | null;
   donation_info: string | null;
+  schedule: string | null;
   updated_at: string;
   needs: { id: string; item: string; priority: NeedPriority }[];
 };
@@ -31,6 +32,7 @@ function mapPointRow(row: PointRow): Point {
     status: row.status,
     mapsUrl: row.maps_url,
     donationInfo: row.donation_info,
+    schedule: row.schedule,
     needs,
     updatedAt: row.updated_at,
   };
@@ -72,6 +74,7 @@ export async function updatePoint(
     address: string;
     mapsUrl: string | null;
     donationInfo: string | null;
+    schedule: string | null;
   }>,
 ) {
   const { error } = await supabase
@@ -81,6 +84,7 @@ export async function updatePoint(
       ...(patch.address !== undefined && { address: patch.address }),
       ...(patch.mapsUrl !== undefined && { maps_url: patch.mapsUrl }),
       ...(patch.donationInfo !== undefined && { donation_info: patch.donationInfo }),
+      ...(patch.schedule !== undefined && { schedule: patch.schedule }),
     })
     .eq("id", id);
 
@@ -120,7 +124,7 @@ export async function deleteNeed(supabase: SupabaseClient, id: string) {
 export type AdminPoint = Point & { coordinatorEmail: string | null };
 
 const ADMIN_POINTS_SELECT =
-  "id, name, address, city, status, maps_url, donation_info, updated_at, needs(id, item, priority), coordinator_profiles(email)";
+  "id, name, address, city, status, maps_url, donation_info, schedule, updated_at, needs(id, item, priority), coordinator_profiles(email)";
 
 export async function fetchAdminPoints(
   supabase: SupabaseClient,
