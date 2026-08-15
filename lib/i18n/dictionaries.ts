@@ -80,6 +80,7 @@ export type Dictionary = {
     inviteButton: string;
     inviteError: string;
     deletePoint: string;
+    needsToggle: (n: number) => string;
   };
 };
 
@@ -181,6 +182,7 @@ const es: Dictionary = {
     inviteButton: "Invitar",
     inviteError: "Error al invitar",
     deletePoint: "Eliminar punto",
+    needsToggle: (n) => `Necesidades (${n})`,
   },
 };
 
@@ -282,6 +284,7 @@ const en: Dictionary = {
     inviteButton: "Invite",
     inviteError: "Error sending invite",
     deletePoint: "Delete point",
+    needsToggle: (n) => `Needs (${n})`,
   },
 };
 
