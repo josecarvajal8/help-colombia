@@ -9,7 +9,7 @@ point; an admin creates points and assigns coordinators.
 
 - Next.js (App Router) + TypeScript + Tailwind CSS
 - Supabase (Postgres + Auth + Realtime)
-- Hosted on Render as a Node web service
+- Hosted on Vercel (`aidcolombia.vercel.app`)
 
 ## Local setup
 
@@ -65,7 +65,15 @@ it out of the browser bundle and out of version control.
 
 ## Deploying
 
-`render.yaml` defines a Render Web Service (Node, `npm run build` /
-`npm run start`). Connect the repo in the Render dashboard, then set
-`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, and
-`SUPABASE_SECRET_KEY` in the service's Environment tab.
+The project is linked to Vercel — pushing to `main` deploys automatically,
+no build config needed (Vercel auto-detects Next.js).
+
+Set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, and
+`SUPABASE_SECRET_KEY` in the Vercel project's Settings → Environment
+Variables (all environments), then redeploy.
+
+Also add the production URL to Supabase's **Authentication → URL
+Configuration → Redirect URLs** (e.g. `https://aidcolombia.vercel.app/**`),
+alongside the `localhost` one used for local dev — otherwise magic-link
+logins on the live site will fail even though the app code itself works,
+since Supabase rejects redirects to URLs not on that allowlist.
