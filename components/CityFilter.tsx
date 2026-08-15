@@ -1,12 +1,7 @@
 "use client";
 
 import type { City } from "@/lib/types";
-
-const CITIES: { value: City | "todas"; label: string }[] = [
-  { value: "todas", label: "Todas las ciudades" },
-  { value: "NJ", label: "Nueva Jersey" },
-  { value: "NYC", label: "Nueva York" },
-];
+import { useDictionary } from "@/lib/i18n/LanguageProvider";
 
 export function CityFilter({
   value,
@@ -15,9 +10,17 @@ export function CityFilter({
   value: City | "todas";
   onChange: (city: City | "todas") => void;
 }) {
+  const dict = useDictionary();
+
+  const cities: { value: City | "todas"; label: string }[] = [
+    { value: "todas", label: dict.city.all },
+    { value: "NJ", label: dict.city.NJ },
+    { value: "NYC", label: dict.city.NYC },
+  ];
+
   return (
     <div className="mb-5 flex flex-wrap gap-2">
-      {CITIES.map((city) => {
+      {cities.map((city) => {
         const active = city.value === value;
         return (
           <button

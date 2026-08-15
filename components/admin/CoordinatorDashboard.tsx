@@ -10,19 +10,9 @@ import {
   updatePoint,
 } from "@/lib/supabase/points";
 import type { Need, NeedPriority, Point, PointStatus } from "@/lib/types";
+import { useDictionary } from "@/lib/i18n/LanguageProvider";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { SignOutButton } from "@/components/SignOutButton";
-
-const STATUS_OPTIONS: { value: PointStatus; label: string }[] = [
-  { value: "abierto", label: "Recibiendo donaciones" },
-  { value: "saturado", label: "Saturado (parcial)" },
-  { value: "cerrado", label: "Cerrado" },
-];
-
-const PRIORITY_OPTIONS: { value: NeedPriority; label: string }[] = [
-  { value: "alta", label: "Urgente" },
-  { value: "media", label: "Necesario" },
-  { value: "baja", label: "Suficiente pronto" },
-];
 
 export function CoordinatorDashboard({
   pointId,
@@ -31,6 +21,7 @@ export function CoordinatorDashboard({
   pointId: string;
   email: string;
 }) {
+  const dict = useDictionary();
   const [point, setPoint] = useState<Point | null | "loading">("loading");
 
   useEffect(() => {
@@ -41,7 +32,7 @@ export function CoordinatorDashboard({
   if (point === "loading") {
     return (
       <main className="mx-auto w-full max-w-[720px] flex-1 px-7 py-16">
-        <p className="text-sm text-ink-soft">Cargando tu punto…</p>
+        <p className="text-sm text-ink-soft">{dict.coordinator.loading}</p>
       </main>
     );
   }
@@ -49,9 +40,7 @@ export function CoordinatorDashboard({
   if (!point) {
     return (
       <main className="mx-auto w-full max-w-[720px] flex-1 px-7 py-16 text-center">
-        <p className="text-sm text-ink-soft">
-          No encontramos un punto asignado a tu cuenta ({email}).
-        </p>
+        <p className="text-sm text-ink-soft">{dict.coordinator.notFound(email)}</p>
       </main>
     );
   }
@@ -61,7 +50,7 @@ export function CoordinatorDashboard({
 
 type SaveState = "idle" | "saving" | "saved" | "error";
 
-function SaveIndicator({ state }: { state: SaveState }) {
+function SaveIndicator({ state, dict }: { state: SaveState; dict: Dictionary }) {
   if (state === "idle") return null;
   return (
     <span
@@ -73,9 +62,9 @@ function SaveIndicator({ state }: { state: SaveState }) {
             : "text-rojo"
       }`}
     >
-      {state === "saving" && "Guardando…"}
-      {state === "saved" && "✓ Guardado"}
-      {state === "error" && "No se pudo guardar — intenta de nuevo"}
+      {state === "saving" && dict.coordinator.saving}
+      {state === "saved" && dict.coordinator.saved}
+      {state === "error" && dict.coordinator.saveError}
     </span>
   );
 }
@@ -89,8 +78,21 @@ function PointEditor({
   onChange: (p: Point) => void;
   email: string;
 }) {
+  const dict = useDictionary();
   const supabase = useMemo(() => createClient(), []);
   const [saveState, setSaveState] = useState<SaveState>("idle");
+
+  const statusOptions: { value: PointStatus; label: string }[] = [
+    { value: "abierto", label: dict.statusOptions.abierto },
+    { value: "saturado", label: dict.statusOptions.saturado },
+    { value: "cerrado", label: dict.statusOptions.cerrado },
+  ];
+
+  const priorityOptions: { value: NeedPriority; label: string }[] = [
+    { value: "alta", label: dict.priority.alta },
+    { value: "media", label: dict.priority.media },
+    { value: "baja", label: dict.priority.baja },
+  ];
 
   async function withSave(fn: () => Promise<void>) {
     setSaveState("saving");
@@ -123,7 +125,7 @@ function PointEditor({
 
   async function handleAddNeed() {
     await withSave(async () => {
-      const need = await addNeed(supabase, point.id, "Nuevo artículo", "media");
+      const need = await addNeed(supabase, point.id, dict.coordinator.newNeedDefault, "media");
       onChange({ ...point, needs: [...point.needs, need] });
     });
   }
@@ -159,22 +161,22 @@ function PointEditor({
       </div>
       <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-1">
         <p className="m-0 text-[13px] text-ink-soft">
-          Sesión de {email} · {point.city}
+          {dict.coordinator.sessionLine(email, point.city)}
         </p>
-        <SaveIndicator state={saveState} />
+        <SaveIndicator state={saveState} dict={dict} />
       </div>
 
       <div className="flex flex-col gap-5 rounded-[var(--radius-card)] border border-line bg-white p-5">
         <div>
           <label className="mb-1.5 block text-[10.5px] font-bold uppercase tracking-wide text-ink-soft">
-            Estado del punto
+            {dict.coordinator.statusLabel}
           </label>
           <select
             value={point.status}
             onChange={(e) => handleStatusChange(e.target.value as PointStatus)}
             className="w-full rounded-lg border border-line bg-paper-dim px-3 py-2 text-[13.5px] font-semibold"
           >
-            {STATUS_OPTIONS.map((opt) => (
+            {statusOptions.map((opt) => (
               <option key={opt.value} value={opt.value}>
                 {opt.label}
               </option>
@@ -184,7 +186,7 @@ function PointEditor({
 
         <div>
           <label className="mb-1.5 block text-[10.5px] font-bold uppercase tracking-wide text-ink-soft">
-            Dirección
+            {dict.coordinator.addressLabel}
           </label>
           <input
             type="text"
@@ -196,7 +198,7 @@ function PointEditor({
 
         <div>
           <label className="mb-1.5 block text-[10.5px] font-bold uppercase tracking-wide text-ink-soft">
-            Enlace de Google Maps
+            {dict.coordinator.mapsLabel}
           </label>
           <input
             type="url"
@@ -209,11 +211,11 @@ function PointEditor({
 
         <div>
           <label className="mb-1.5 block text-[10.5px] font-bold uppercase tracking-wide text-ink-soft">
-            Datos para donación en dinero (opcional)
+            {dict.coordinator.donationLabel}
           </label>
           <textarea
             defaultValue={point.donationInfo ?? ""}
-            placeholder="Ej: Nequi 300 123 4567 — A nombre de..."
+            placeholder={dict.coordinator.donationPlaceholder}
             onBlur={(e) => handleFieldBlur("donationInfo", e.target.value)}
             rows={2}
             className="w-full rounded-lg border border-line px-3 py-2 text-[13.5px]"
@@ -222,7 +224,7 @@ function PointEditor({
 
         <div>
           <label className="mb-1.5 block text-[10.5px] font-bold uppercase tracking-wide text-ink-soft">
-            Qué se necesita
+            {dict.coordinator.needsLabel}
           </label>
           <div className="flex flex-col gap-2">
             {point.needs.map((need) => (
@@ -240,7 +242,7 @@ function PointEditor({
                   }
                   className="rounded-md border border-line px-1.5 py-1.5 text-xs"
                 >
-                  {PRIORITY_OPTIONS.map((opt) => (
+                  {priorityOptions.map((opt) => (
                     <option key={opt.value} value={opt.value}>
                       {opt.label}
                     </option>
@@ -260,7 +262,7 @@ function PointEditor({
               onClick={handleAddNeed}
               className="self-start rounded-md border border-dashed border-line px-2.5 py-1.5 text-xs font-semibold text-ink-soft hover:border-azul hover:text-azul"
             >
-              + Agregar artículo
+              {dict.coordinator.addNeed}
             </button>
           </div>
         </div>

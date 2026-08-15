@@ -10,16 +10,12 @@ import {
   updatePoint,
 } from "@/lib/supabase/points";
 import type { City, PointStatus } from "@/lib/types";
+import { useDictionary } from "@/lib/i18n/LanguageProvider";
 import { SignOutButton } from "@/components/SignOutButton";
 import { StatusPill } from "@/components/StatusPulse";
 
-const STATUS_OPTIONS: { value: PointStatus; label: string }[] = [
-  { value: "abierto", label: "Recibiendo donaciones" },
-  { value: "saturado", label: "Saturado (parcial)" },
-  { value: "cerrado", label: "Cerrado" },
-];
-
 export function AdminDashboard({ email }: { email: string }) {
+  const dict = useDictionary();
   const supabase = useMemo(() => createClient(), []);
   const [points, setPoints] = useState<AdminPoint[] | "loading">("loading");
 
@@ -38,11 +34,11 @@ export function AdminDashboard({ email }: { email: string }) {
     <main className="mx-auto w-full max-w-[900px] flex-1 px-4 py-6 pb-16 sm:px-7">
       <div className="mb-1 flex flex-wrap items-baseline justify-between gap-2.5">
         <h2 className="m-0 font-[family-name:var(--font-display)] text-2xl font-medium">
-          Panel admin
+          {dict.admin.heading}
         </h2>
         <SignOutButton />
       </div>
-      <p className="mb-6 text-[13px] text-ink-soft">Sesión de {email}</p>
+      <p className="mb-6 text-[13px] text-ink-soft">{dict.admin.sessionLine(email)}</p>
 
       <NewPointForm
         onCreated={(p) =>
@@ -52,7 +48,7 @@ export function AdminDashboard({ email }: { email: string }) {
 
       <div className="mt-6 flex flex-col gap-3">
         {points === "loading" ? (
-          <p className="text-sm text-ink-soft">Cargando puntos…</p>
+          <p className="text-sm text-ink-soft">{dict.admin.loadingPoints}</p>
         ) : (
           points.map((point) => (
             <PointRow key={point.id} point={point} onChanged={refetch} />
@@ -64,6 +60,7 @@ export function AdminDashboard({ email }: { email: string }) {
 }
 
 function NewPointForm({ onCreated }: { onCreated: (p: AdminPoint) => void }) {
+  const dict = useDictionary();
   const supabase = useMemo(() => createClient(), []);
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -96,12 +93,12 @@ function NewPointForm({ onCreated }: { onCreated: (p: AdminPoint) => void }) {
       className="flex flex-col gap-3 rounded-[var(--radius-card)] border border-dashed border-azul bg-azul-soft p-4"
     >
       <span className="text-[11px] font-bold uppercase tracking-wide text-azul">
-        Registrar nuevo punto de acopio
+        {dict.admin.newPointTitle}
       </span>
       <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
         <input
           required
-          placeholder="Nombre del punto"
+          placeholder={dict.admin.namePlaceholder}
           value={name}
           onChange={(e) => setName(e.target.value)}
           className="rounded-lg border border-line bg-white px-3 py-2 text-[13.5px]"
@@ -111,18 +108,18 @@ function NewPointForm({ onCreated }: { onCreated: (p: AdminPoint) => void }) {
           onChange={(e) => setCity(e.target.value as City)}
           className="rounded-lg border border-line bg-white px-3 py-2 text-[13.5px]"
         >
-          <option value="NJ">Nueva Jersey</option>
-          <option value="NYC">Nueva York</option>
+          <option value="NJ">{dict.city.NJ}</option>
+          <option value="NYC">{dict.city.NYC}</option>
         </select>
         <input
           required
-          placeholder="Dirección"
+          placeholder={dict.admin.addressPlaceholder}
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           className="rounded-lg border border-line bg-white px-3 py-2 text-[13.5px] sm:col-span-2"
         />
         <input
-          placeholder="Enlace de Google Maps (opcional)"
+          placeholder={dict.admin.mapsPlaceholder}
           value={mapsUrl}
           onChange={(e) => setMapsUrl(e.target.value)}
           className="rounded-lg border border-line bg-white px-3 py-2 text-[13.5px] sm:col-span-2"
@@ -133,7 +130,7 @@ function NewPointForm({ onCreated }: { onCreated: (p: AdminPoint) => void }) {
         disabled={saving}
         className="self-start rounded-lg bg-azul px-4 py-2 text-[13px] font-bold text-white disabled:opacity-60"
       >
-        {saving ? "Creando..." : "+ Crear punto"}
+        {saving ? dict.admin.creatingButton : dict.admin.createButton}
       </button>
     </form>
   );
@@ -146,10 +143,17 @@ function PointRow({
   point: AdminPoint;
   onChanged: () => void;
 }) {
+  const dict = useDictionary();
   const supabase = useMemo(() => createClient(), []);
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviting, setInviting] = useState(false);
   const [inviteError, setInviteError] = useState<string | null>(null);
+
+  const statusOptions: { value: PointStatus; label: string }[] = [
+    { value: "abierto", label: dict.statusOptions.abierto },
+    { value: "saturado", label: dict.statusOptions.saturado },
+    { value: "cerrado", label: dict.statusOptions.cerrado },
+  ];
 
   async function handleStatusChange(status: PointStatus) {
     await updatePoint(supabase, point.id, { status });
@@ -172,11 +176,11 @@ function PointRow({
         body: JSON.stringify({ email: inviteEmail, pointId: point.id }),
       });
       const body = await res.json();
-      if (!res.ok) throw new Error(body.error ?? "Error al invitar");
+      if (!res.ok) throw new Error(body.error ?? dict.admin.inviteError);
       setInviteEmail("");
       onChanged();
     } catch (err) {
-      setInviteError(err instanceof Error ? err.message : "Error al invitar");
+      setInviteError(err instanceof Error ? err.message : dict.admin.inviteError);
     } finally {
       setInviting(false);
     }
@@ -191,8 +195,8 @@ function PointRow({
         </p>
         <p className="mt-1 text-[12px] text-ink-soft">
           {point.coordinatorEmail
-            ? `Coordinador: ${point.coordinatorEmail}`
-            : "Sin coordinador asignado"}
+            ? dict.admin.coordinatorLabel(point.coordinatorEmail)
+            : dict.admin.noCoordinator}
         </p>
       </div>
 
@@ -204,7 +208,7 @@ function PointRow({
             onChange={(e) => handleStatusChange(e.target.value as PointStatus)}
             className="rounded-lg border border-line bg-paper-dim px-2 py-1 text-xs font-semibold"
           >
-            {STATUS_OPTIONS.map((opt) => (
+            {statusOptions.map((opt) => (
               <option key={opt.value} value={opt.value}>
                 {opt.label}
               </option>
@@ -217,7 +221,7 @@ function PointRow({
             <input
               type="email"
               required
-              placeholder="correo del coordinador"
+              placeholder={dict.admin.invitePlaceholder}
               value={inviteEmail}
               onChange={(e) => setInviteEmail(e.target.value)}
               className="min-w-0 flex-1 rounded-md border border-line px-2 py-1 text-xs"
@@ -227,7 +231,7 @@ function PointRow({
               disabled={inviting}
               className="rounded-md bg-ink px-2.5 py-1 text-xs font-bold text-paper disabled:opacity-60"
             >
-              Invitar
+              {dict.admin.inviteButton}
             </button>
           </form>
         )}
@@ -238,7 +242,7 @@ function PointRow({
           onClick={handleDelete}
           className="text-xs font-semibold text-rojo"
         >
-          Eliminar punto
+          {dict.admin.deletePoint}
         </button>
       </div>
     </div>

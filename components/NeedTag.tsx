@@ -6,12 +6,6 @@ const TAG_CLASSES: Record<Need["priority"], string> = {
   baja: "bg-azul-soft text-azul",
 };
 
-export const PRIORITY_LABEL: Record<Need["priority"], string> = {
-  alta: "Urgente",
-  media: "Necesario",
-  baja: "Ya hay suficiente pronto",
-};
-
 export function NeedTag({ need }: { need: Need }) {
   return (
     <span

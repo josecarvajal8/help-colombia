@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 import type { Point } from "@/lib/types";
-import { formatRelativeEs } from "@/lib/format";
+import { formatRelative } from "@/lib/format";
+import { useDictionary } from "@/lib/i18n/LanguageProvider";
 import { StatusPill } from "./StatusPulse";
 import { NeedTag } from "./NeedTag";
 
@@ -13,6 +14,8 @@ export function PointDetailModal({
   point: Point;
   onClose: () => void;
 }) {
+  const dict = useDictionary();
+
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -47,7 +50,7 @@ export function PointDetailModal({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Cerrar"
+            aria-label={dict.point.close}
             className="shrink-0 rounded-full bg-paper-dim px-2.5 py-1 text-sm text-ink-soft"
           >
             ×
@@ -63,17 +66,17 @@ export function PointDetailModal({
             rel="noopener noreferrer"
             className="self-start rounded-lg bg-azul-soft px-3 py-1.5 text-[12.5px] font-semibold text-azul"
           >
-            Abrir en Google Maps →
+            {dict.point.openMaps}
           </a>
         )}
 
         <div className="flex flex-col gap-1.5">
           <span className="text-[11px] font-bold uppercase tracking-wide text-ink-soft">
-            Se necesita
+            {dict.point.needsTitle}
           </span>
           {point.needs.length === 0 ? (
             <span className="text-[12.5px] font-semibold text-verde">
-              ✓ No se requiere nada más por ahora
+              {dict.point.needsEmpty}
             </span>
           ) : (
             <div className="flex flex-wrap gap-1.5">
@@ -87,7 +90,7 @@ export function PointDetailModal({
         {point.donationInfo && (
           <div className="flex flex-col gap-1 rounded-lg bg-paper-dim p-3">
             <span className="text-[11px] font-bold uppercase tracking-wide text-ink-soft">
-              Donación en dinero
+              {dict.point.donationTitle}
             </span>
             <p className="whitespace-pre-line text-[13px]">{point.donationInfo}</p>
           </div>
@@ -96,7 +99,7 @@ export function PointDetailModal({
         <div className="flex items-center justify-between border-t border-dashed border-line pt-2.5 text-[11.5px] text-ink-soft">
           <span className="font-bold text-ink">{point.city}</span>
           <span className="font-[family-name:var(--font-data)]">
-            {formatRelativeEs(point.updatedAt)}
+            {formatRelative(point.updatedAt, dict)}
           </span>
         </div>
       </div>

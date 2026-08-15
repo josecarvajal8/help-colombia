@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import type { Point } from "@/lib/types";
-import { formatRelativeEs } from "@/lib/format";
+import { formatRelative } from "@/lib/format";
+import { useDictionary } from "@/lib/i18n/LanguageProvider";
 import { StatusPill } from "./StatusPulse";
 import { NeedTag } from "./NeedTag";
 import { PointDetailModal } from "./PointDetailModal";
@@ -10,6 +11,7 @@ import { PointDetailModal } from "./PointDetailModal";
 const NEEDS_PREVIEW_COUNT = 3;
 
 export function PointCard({ point }: { point: Point }) {
+  const dict = useDictionary();
   const [showDetail, setShowDetail] = useState(false);
 
   const visibleNeeds = point.needs.slice(0, NEEDS_PREVIEW_COUNT);
@@ -32,11 +34,11 @@ export function PointCard({ point }: { point: Point }) {
 
         <div className="flex flex-col gap-1.5">
           <span className="text-[11px] font-bold uppercase tracking-wide text-ink-soft">
-            Se necesita
+            {dict.point.needsTitle}
           </span>
           {point.needs.length === 0 ? (
             <span className="text-[12.5px] font-semibold text-verde">
-              ✓ No se requiere nada más por ahora
+              {dict.point.needsEmpty}
             </span>
           ) : (
             <div className="flex flex-wrap gap-1.5">
@@ -49,7 +51,7 @@ export function PointCard({ point }: { point: Point }) {
                   onClick={() => setShowDetail(true)}
                   className="rounded-lg bg-paper-dim px-2.5 py-1 text-xs font-semibold text-ink-soft"
                 >
-                  +{hiddenCount} más
+                  {dict.point.moreCount(hiddenCount)}
                 </button>
               )}
             </div>
@@ -61,13 +63,13 @@ export function PointCard({ point }: { point: Point }) {
           onClick={() => setShowDetail(true)}
           className="self-start text-[12.5px] font-semibold text-azul"
         >
-          Ver detalles →
+          {dict.point.viewDetails}
         </button>
 
         <div className="flex items-center justify-between border-t border-dashed border-line pt-2.5 text-[11.5px] text-ink-soft">
           <span className="font-bold text-ink">{point.city}</span>
           <span className="font-[family-name:var(--font-data)]">
-            {formatRelativeEs(point.updatedAt)}
+            {formatRelative(point.updatedAt, dict)}
           </span>
         </div>
       </div>
