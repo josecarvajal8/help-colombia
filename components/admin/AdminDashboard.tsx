@@ -195,6 +195,11 @@ function PointRow({
     onChanged();
   }
 
+  async function handleScheduleBlur(value: string) {
+    await updatePoint(supabase, point.id, { schedule: value || null });
+    onChanged();
+  }
+
   async function handleInvite(e: React.FormEvent) {
     e.preventDefault();
     setInviting(true);
@@ -229,6 +234,18 @@ function PointRow({
               ? dict.admin.coordinatorLabel(point.coordinatorEmail)
               : dict.admin.noCoordinator}
           </p>
+          <div className="mt-2">
+            <label className="mb-1 block text-[10px] font-bold uppercase tracking-wide text-ink-soft">
+              {dict.coordinator.scheduleLabel}
+            </label>
+            <input
+              type="text"
+              defaultValue={point.schedule ?? ""}
+              placeholder={dict.coordinator.schedulePlaceholder}
+              onBlur={(e) => handleScheduleBlur(e.target.value)}
+              className="w-full max-w-xs rounded-md border border-line px-2 py-1 text-xs"
+            />
+          </div>
         </div>
 
         <div className="flex flex-col items-stretch gap-2 sm:items-end">
