@@ -35,7 +35,7 @@ export function AdminDashboard({ email }: { email: string }) {
   }, [refetch]);
 
   return (
-    <main className="mx-auto w-full max-w-[900px] flex-1 px-7 py-6 pb-16">
+    <main className="mx-auto w-full max-w-[900px] flex-1 px-4 py-6 pb-16 sm:px-7">
       <div className="mb-1 flex flex-wrap items-baseline justify-between gap-2.5">
         <h2 className="m-0 font-[family-name:var(--font-display)] text-2xl font-medium">
           Panel admin
@@ -213,14 +213,14 @@ function PointRow({
         </div>
 
         {!point.coordinatorEmail && (
-          <form onSubmit={handleInvite} className="flex items-center gap-1.5">
+          <form onSubmit={handleInvite} className="flex w-full items-center gap-1.5">
             <input
               type="email"
               required
               placeholder="correo del coordinador"
               value={inviteEmail}
               onChange={(e) => setInviteEmail(e.target.value)}
-              className="rounded-md border border-line px-2 py-1 text-xs"
+              className="min-w-0 flex-1 rounded-md border border-line px-2 py-1 text-xs"
             />
             <button
               type="submit"

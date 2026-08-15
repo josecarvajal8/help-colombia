@@ -59,6 +59,27 @@ export function CoordinatorDashboard({
   return <PointEditor point={point} onChange={setPoint} email={email} />;
 }
 
+type SaveState = "idle" | "saving" | "saved" | "error";
+
+function SaveIndicator({ state }: { state: SaveState }) {
+  if (state === "idle") return null;
+  return (
+    <span
+      className={`text-[12px] font-semibold ${
+        state === "saving"
+          ? "text-ink-soft"
+          : state === "saved"
+            ? "text-verde"
+            : "text-rojo"
+      }`}
+    >
+      {state === "saving" && "Guardando…"}
+      {state === "saved" && "✓ Guardado"}
+      {state === "error" && "No se pudo guardar — intenta de nuevo"}
+    </span>
+  );
+}
+
 function PointEditor({
   point,
   onChange,
@@ -69,10 +90,23 @@ function PointEditor({
   email: string;
 }) {
   const supabase = useMemo(() => createClient(), []);
+  const [saveState, setSaveState] = useState<SaveState>("idle");
+
+  async function withSave(fn: () => Promise<void>) {
+    setSaveState("saving");
+    try {
+      await fn();
+      setSaveState("saved");
+      setTimeout(() => setSaveState((s) => (s === "saved" ? "idle" : s)), 2000);
+    } catch (err) {
+      console.error(err);
+      setSaveState("error");
+    }
+  }
 
   async function handleStatusChange(status: PointStatus) {
     onChange({ ...point, status });
-    await updatePoint(supabase, point.id, { status });
+    await withSave(() => updatePoint(supabase, point.id, { status }));
   }
 
   async function handleFieldBlur(
@@ -84,17 +118,19 @@ function PointEditor({
       mapsUrl: string | null;
       donationInfo: string | null;
     }>;
-    await updatePoint(supabase, point.id, patch);
+    await withSave(() => updatePoint(supabase, point.id, patch));
   }
 
   async function handleAddNeed() {
-    const need = await addNeed(supabase, point.id, "Nuevo artículo", "media");
-    onChange({ ...point, needs: [...point.needs, need] });
+    await withSave(async () => {
+      const need = await addNeed(supabase, point.id, "Nuevo artículo", "media");
+      onChange({ ...point, needs: [...point.needs, need] });
+    });
   }
 
   async function handleRemoveNeed(id: string) {
     onChange({ ...point, needs: point.needs.filter((n) => n.id !== id) });
-    await deleteNeed(supabase, id);
+    await withSave(() => deleteNeed(supabase, id));
   }
 
   function patchNeedLocal(id: string, patch: Partial<Need>) {
@@ -106,24 +142,27 @@ function PointEditor({
 
   async function handleNeedPriorityChange(id: string, priority: NeedPriority) {
     patchNeedLocal(id, { priority });
-    await updateNeed(supabase, id, { priority });
+    await withSave(() => updateNeed(supabase, id, { priority }));
   }
 
   async function handleNeedItemBlur(id: string, item: string) {
-    await updateNeed(supabase, id, { item });
+    await withSave(() => updateNeed(supabase, id, { item }));
   }
 
   return (
-    <main className="mx-auto w-full max-w-[720px] flex-1 px-7 py-6 pb-16">
+    <main className="mx-auto w-full max-w-[720px] flex-1 px-4 py-6 pb-16 sm:px-7">
       <div className="mb-1 flex flex-wrap items-baseline justify-between gap-2.5">
         <h2 className="m-0 font-[family-name:var(--font-display)] text-2xl font-medium">
           {point.name}
         </h2>
         <SignOutButton />
       </div>
-      <p className="mb-6 text-[13px] text-ink-soft">
-        Sesión de {email} · {point.city}
-      </p>
+      <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-1">
+        <p className="m-0 text-[13px] text-ink-soft">
+          Sesión de {email} · {point.city}
+        </p>
+        <SaveIndicator state={saveState} />
+      </div>
 
       <div className="flex flex-col gap-5 rounded-[var(--radius-card)] border border-line bg-white p-5">
         <div>
@@ -192,7 +231,7 @@ function PointEditor({
                   type="text"
                   defaultValue={need.item}
                   onBlur={(e) => handleNeedItemBlur(need.id, e.target.value)}
-                  className="flex-1 rounded-md border border-line px-2.5 py-1.5 text-[12.5px]"
+                  className="min-w-0 flex-1 rounded-md border border-line px-2.5 py-1.5 text-[12.5px]"
                 />
                 <select
                   value={need.priority}

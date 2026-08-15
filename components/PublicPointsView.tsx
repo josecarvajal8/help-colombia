@@ -36,7 +36,7 @@ export function PublicPointsView({ initialPoints }: { initialPoints: Point[] }) 
   );
 
   return (
-    <main className="mx-auto w-full max-w-[1180px] flex-1 px-7 py-6 pb-16">
+    <main className="mx-auto w-full max-w-[1180px] flex-1 px-4 py-6 pb-16 sm:px-7">
       <div className="mb-1 flex flex-wrap items-baseline justify-between gap-2.5">
         <h2 className="m-0 font-[family-name:var(--font-display)] text-[26px] font-medium">
           Puntos de acopio activos
@@ -57,7 +57,7 @@ export function PublicPointsView({ initialPoints }: { initialPoints: Point[] }) 
           No hay puntos de acopio para este filtro todavía.
         </p>
       ) : (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-3.5">
+        <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
           {filteredPoints.map((point) => (
             <PointCard key={point.id} point={point} />
           ))}

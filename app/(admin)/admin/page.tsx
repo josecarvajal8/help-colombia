@@ -15,7 +15,7 @@ export default async function AdminView() {
 
   if (role.kind === "unauthorized") {
     return (
-      <main className="mx-auto w-full max-w-[640px] flex-1 px-7 py-16 text-center">
+      <main className="mx-auto w-full max-w-[640px] flex-1 px-4 py-16 text-center sm:px-7">
         <h2 className="m-0 font-[family-name:var(--font-display)] text-2xl font-medium">
           Sin acceso todavía
         </h2>

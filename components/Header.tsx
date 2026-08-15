@@ -12,7 +12,7 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line px-7 py-[22px]">
+    <div className="sticky top-0 z-40 flex flex-wrap items-center justify-between gap-4 border-b border-line bg-paper px-4 py-[18px] sm:px-7 sm:py-[22px]">
       <div className="flex items-center gap-3">
         <div
           className="h-[34px] w-[34px] shrink-0 rounded-[9px]"
@@ -26,7 +26,7 @@ export function Header() {
             Red de Acopio — NJ / NYC
           </h1>
           <p className="m-0 mt-0.5 text-[12.5px] text-ink-soft">
-            Coordinación de ayuda para el terremoto en Chocó, Colombia
+            Coordinación de ayuda para Colombia
           </p>
         </div>
       </div>
